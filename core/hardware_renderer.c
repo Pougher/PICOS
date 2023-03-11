@@ -27,16 +27,17 @@ void render_swap(struct renderer* renderer) {
 }
 
 void render_clear(struct renderer* renderer, int col) {
+    if (col) col = 0xff;
     // clears the backbuffer
     for (int i = 0; i < (SCREEN_WIDTH * SCREEN_HEIGHT) / 8; i++)
-        renderer->backbuffer[i] = 0x00;
+        renderer->backbuffer[i] = col;
 }
 
-void render_putpixel(struct render* renderer, int x, int y, int col) {
+void render_putpixel(struct renderer* renderer, int x, int y, int col) {
     int offset = ((y / 8) * WIDTH) + x;
     int bit    = y % 8;
     renderer->backbuffer[offset] &= ~(1 << bit);
-    renderer->backbuffer[offset] |= (value & 1) << bit;
+    renderer->backbuffer[offset] |= (col & 1) << bit;
 }
 
 #endif

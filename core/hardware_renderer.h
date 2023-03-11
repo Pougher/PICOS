@@ -21,7 +21,7 @@ struct renderer* renderer_new(void);
 void render_free(struct renderer* renderer);
 void render_swap(struct renderer* renderer);
 void render_clear(struct renderer* renderer, int col);
-void render_putpixel(struct render* renderer, int x, int y, int col);
+void render_putpixel(struct renderer* renderer, int x, int y, int col);
 
 #endif
 
