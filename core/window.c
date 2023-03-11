@@ -1,5 +1,7 @@
 #include "window.h"
 
+#ifdef SOFTWARE_BUILD
+
 struct window* window_create(char* title, int w, int h) {
     struct window* win = malloc(sizeof(struct window));
     win->width = w;
@@ -58,3 +60,7 @@ void window_free(struct window* window) {
 
     free(window);
 }
+
+#endif
+
+void null_func_2(void) {}

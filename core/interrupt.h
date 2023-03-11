@@ -20,4 +20,6 @@ void interrupt_request(struct InterruptHandler* ih,
                        char address,
                        char* data);
 
+void interrupt_handler_free(struct InterruptHandler* ih);
+
 #endif

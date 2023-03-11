@@ -1,6 +1,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "build_type.h"
+
+#ifdef SOFTWARE_BUILD
+
 #include <SDL2/SDL.h>
 
 #include "renderer.h"
@@ -21,5 +25,7 @@ struct window* window_create(char* title, int w, int h);
 
 void window_send_buffer_emu(struct window* win, struct renderer* renderer);
 void window_free(struct window* window);
+
+#endif
 
 #endif

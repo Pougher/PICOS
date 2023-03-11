@@ -32,6 +32,11 @@ void render_clear(struct renderer* renderer, int col) {
         renderer->backbuffer[i] = col;
 }
 
+void render_putpixel(struct renderer* renderer, int x, int y, int col) {
+    // sets a pixel at a specific coordinate in the backbuffer to `col`
+    renderer->backbuffer[x + y * SCREEN_WIDTH] = col;
+}
+
 #endif
 
-void null_func_1(void) {}
+void null_func_1(void) {} // prevent compiler errors

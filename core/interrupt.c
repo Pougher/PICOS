@@ -21,3 +21,9 @@ void interrupt_request(struct InterruptHandler* ih,
     // calls the interrupt handler at `address` and supplies it with `data`
     ih->interrupts[(unsigned int)address](data);
 }
+
+void interrupt_handler_free(struct InterruptHandler* ih) {
+    // frees the interrupt handler memory
+    free(ih->interrupts);
+    free(ih);
+}

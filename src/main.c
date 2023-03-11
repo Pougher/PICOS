@@ -1,6 +1,4 @@
-#include "../core/build_type.h"
-#include "../core/graphics.h"
-#include "../core/renderer.h"
+#include "../core/picos.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,47 +8,64 @@
 #include <SDL2/SDL.h>
 #include "../core/window.h"
 
-char bitmap[8*8] = {
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0, 1, 0, 0, 0,
-    0, 1, 0, 1, 0, 1, 0, 0,
-    1, 0, 0, 0, 0, 0, 1, 0,
-    1, 0, 0, 0, 0, 0, 1, 0,
-    0, 1, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 1, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 0, 0,
-};
+char gdata[20] = { 0 };
+int data_ptr = 0;
+
+int keycode_handler(char* data) {
+    gdata[data_ptr] = data[0];
+    data_ptr++;
+    return 1;
+}
 
 int main(void) {
     SDL_Init(SDL_INIT_VIDEO);
-    struct window* win = window_create("FoxOS Emulator", 1280, 640);
-    struct renderer* rend = renderer_new();
+    struct window* win = window_create("PICOS Emulator", 1280, 640);
+    renderer = renderer_new();
+    interrupt_handler = interrupt_handler_new();
+
+    // register key handler
+    register_interrupt_handler(interrupt_handler,
+                               INTERRUPT_KEYBOARD,
+                               keycode_handler);
 
     SDL_ShowWindow(win->window);
 
     SDL_Event event;
     int running = 1;
 
-    int x = 0;
-
-    while(running) {
-        while(SDL_PollEvent(&event)) {
-            if(event.type == SDL_QUIT) {
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT: {
+                    running = 0;
+                    break;
+                }
+                case SDL_KEYDOWN: {
+                    if (event.key.keysym.sym < 0x80) {
+                        // ascii key character
+                        interrupt_request(interrupt_handler,
+                                          INTERRUPT_KEYBOARD,
+                                          (char[]) {
+                                          (char)event.key.keysym.sym}
+                                          );
+                    }
+                    break;
+                }
+            }
+            if (event.type == SDL_QUIT) {
                 running = 0;
             }
         }
-        render_clear(rend, 0);
-        graphics_draw_string(rend, "PICOS OS 0.1a", x, 0);
-        graphics_draw_bitmap(rend, bitmap, 8, 8, 0, 0);
-        render_swap(rend);
+        render_clear(renderer, 0);
+        graphics_draw_string(renderer, gdata, 0, 0);
+        render_swap(renderer);
 
-        window_send_buffer_emu(win, rend);
+        window_send_buffer_emu(win, renderer);
         SDL_Delay(16);
-
-        x = (x + 1) % 128;
     }
 
     window_free(win);
+    interrupt_handler_free(interrupt_handler);
 
     return 0;
 }

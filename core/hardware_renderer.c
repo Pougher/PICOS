@@ -32,6 +32,13 @@ void render_clear(struct renderer* renderer, int col) {
         renderer->backbuffer[i] = 0x00;
 }
 
+void render_putpixel(struct render* renderer, int x, int y, int col) {
+    int offset = ((y / 8) * WIDTH) + x;
+    int bit    = y % 8;
+    renderer->backbuffer[offset] &= ~(1 << bit);
+    renderer->backbuffer[offset] |= (value & 1) << bit;
+}
+
 #endif
 
 void null_func(void) {}
