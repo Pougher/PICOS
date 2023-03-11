@@ -1,0 +1,2 @@
+-I /opt/homebrew/Cellar/sdl2/2.26.4/include
+
