@@ -7,8 +7,8 @@ void graphics_draw_string(struct renderer* rend, char* str, int x_, int y) {
             for (int j = 7; j >= 2; j--) {
                 render_putpixel(
                     rend,
-                    (x * 128) + j + (i * 6) + x_,
-                    y,
+                    j + (i * 6) + x_,
+                    y + x,
                     (font6x8[(int)str[i]][x] >> j) & 1
                 );
             }

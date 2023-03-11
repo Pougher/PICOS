@@ -66,6 +66,7 @@ int main(void) {
 
     window_free(win);
     interrupt_handler_free(interrupt_handler);
+    render_free(renderer);
 
     return 0;
 }
