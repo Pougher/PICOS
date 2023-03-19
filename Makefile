@@ -1,5 +1,5 @@
 TARGET ?= picos
-SRC_DIRS ?= ./src ./core
+SRC_DIRS ?= ./src ./core ./os ./apps
 
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
 OBJS := $(addsuffix .o,$(basename $(SRCS)))
