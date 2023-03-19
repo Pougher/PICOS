@@ -63,6 +63,7 @@ int main(void) {
     window_free(win);
     render_free(renderer);
     menu_free(menu);
+    keyboard_free(keyboard);
 
     return 0;
 }
