@@ -73,11 +73,13 @@ int main(void) {
     ST7567_begin();
 
     ST7567_contrast(40);
+    ST7567_set_backlight(1);
 
     menu = menu_new();
     renderer = renderer_new();
 
     menu_load_apps(menu, APP_LIST, APP_NUM);
+    menu_test();
 
     while (1) {
         render_clear(renderer, 0);
