@@ -1,6 +1,6 @@
 #ifndef APPLICATIONS_H
 #define APPLICATIONS_H
 
-#include "test_app.h"
+#include "pvim/pvim.h"
 
 #endif

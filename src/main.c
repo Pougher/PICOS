@@ -5,19 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void menu_test(void) {
+    menu_open_app(menu, 0);
+}
+
 #ifdef SOFTWARE_BUILD
 
 #include <SDL2/SDL.h>
 #include "../core/window.h"
-
-int keycode_handler(char* data) {
-    (void) data;
-    return 0;
-}
-
-void menu_test(void) {
-    menu_open_app(menu, 0);
-}
 
 int main(void) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -73,7 +68,32 @@ int main(void) {
 #ifdef HARDWARE_BUILD
 
 int main(void) {
-    printf("HARDWARE BUILD SUCCEED!\n");
+    ST7567_init();
+    ST7567_reset();
+    ST7567_begin();
+
+    ST7567_contrast(40);
+
+    menu = menu_new();
+    renderer = renderer_new();
+
+    menu_load_apps(menu, APP_LIST, APP_NUM);
+
+    while (1) {
+        render_clear(renderer, 0);
+
+        if (menu->loaded) {
+            menu->apps[menu->loaded_index]->update();
+        }
+
+        render_swap(renderer);
+        ST7567_show(renderer->frontbuffer);
+        delay(16);
+    }
+
+    render_free(renderer);
+    menu_free(menu);
+
     return 0;
 }
 

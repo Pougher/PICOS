@@ -81,3 +81,20 @@ void graphics_draw_bitmap(struct renderer* rend,
         }
     }
 }
+
+void graphics_draw_line(struct renderer* rend, int x1, int y1, int x2, int y2) {
+    // draws a line from (x1, y1) to (x2, y2)
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    int D = 2 * dy - dx;
+    int y = y1;
+
+    for (int x = x1; x < x2; x++) {
+        render_putpixel(rend, x, y, 1);
+        if (D > 0) {
+            y = y + 1;
+            D = D - 2 * dx;
+        }
+        D = D + 2*dy;
+    }
+}

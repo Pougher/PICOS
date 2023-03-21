@@ -16,5 +16,6 @@ void graphics_draw_bitmap(struct renderer* rend,
                           int size_y,
                           int x,
                           int y);
+void graphics_draw_line(struct renderer* rend, int x1, int y1, int x2, int y2);
 
 #endif
