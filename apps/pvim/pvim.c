@@ -11,7 +11,7 @@ static int pvim_mode;
 static int pvim_statusline_timeout;
 static int pvim_buffer_window_begin;
 
-static struct { int x; int y; } pvim_cursor;
+static struct { int x; int y; int true_y; } pvim_cursor;
 
 struct application* pvim_new(void) {
     struct application* pvim = malloc(sizeof(struct application));
@@ -46,6 +46,7 @@ void pvim_begin(void) {
 
     pvim_cursor.x = 0;
     pvim_cursor.y = 0;
+    pvim_cursor.true_y = 0;
     pvim_cur_line = pvim_buffer;
     pvim_buffer_window_begin = 0;
 }
@@ -73,6 +74,7 @@ void pvim_handle_arrows(int v) {
                     }
                 pvim_cur_line = pvim_cur_line->last;
                 pvim_cursor.x = pvim_cur_line->v->len;
+                pvim_cursor.true_y--;
             }
             break;
         }
@@ -84,6 +86,7 @@ void pvim_handle_arrows(int v) {
                 }
                 pvim_cur_line = pvim_cur_line->next;
                 pvim_cursor.x = pvim_cur_line->v->len;
+                pvim_cursor.true_y++;
             }
             break;
         }
@@ -155,10 +158,11 @@ void pvim_update(void) {
                     pvim_cur_line = pvim_buffer->end;
                 } else {
                     _picos_buffer inserted = picos_buffer_insert(pvim_buffer,
-                        pvim_cursor.y);
+                        pvim_cursor.true_y);
                     pvim_cur_line = inserted;
                 }
                 pvim_cursor.y++;
+                pvim_cursor.true_y++;
                 if (pvim_cursor.y > 6) {
                     pvim_buffer_window_begin++;
                     pvim_cursor.y = 6;
