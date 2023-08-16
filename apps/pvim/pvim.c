@@ -150,9 +150,25 @@ void pvim_update(void) {
             graphics_draw_string_inv(renderer, "INSERT", 0, 56);
             if (input == '\033') { pvim_mode = 0; return; }
             if (input == 0x08) {
-                
-            }
-            else if (input == 0x0d) {
+                if (pvim_cursor.x > 0) {
+                    pvim_cursor.x--;
+                    picos_str_delete(pvim_cur_line->v, pvim_cursor.x - 1);
+                } else if (pvim_cur_line->last != NULL) {
+                    // delete the whole line
+                    _picos_buffer last = pvim_cur_line->last;
+                    _picos_buffer next = pvim_cur_line->next;
+                    if (next != NULL) {
+                        next->last = last;
+                    }
+                    last->next = next;
+                    if (pvim_cur_line == pvim_buffer->end) pvim_buffer->end = last;
+                    picos_str_free(pvim_cur_line->v);
+                    free(pvim_cur_line);
+                    pvim_cur_line = last;
+                    pvim_cursor.y--;
+                    pvim_cursor.x = last->v->len;
+                }
+            } else if (input == 0x0d) {
                 if (pvim_cur_line == pvim_buffer->end) {
                     picos_buffer_newline(pvim_buffer);
                     pvim_cur_line = pvim_buffer->end;
@@ -222,10 +238,17 @@ void pvim_update(void) {
                             pvim_statusline_timeout = 60;
                             return;
                         }
-                        fprintf(fptr, "%s", pvim_cur_line->v->str);
+                        _picos_buffer buf_cpy = pvim_buffer;
+                        int len = 0;
+
+                        while (buf_cpy != NULL) {
+                            fprintf(fptr, "%s", buf_cpy->v->str);
+                            len += buf_cpy->v->len;
+                            buf_cpy = buf_cpy->next;
+                        }
                         picos_str_clear(pvim_status_buffer);
                         char file_len[20] = { 0 };
-                        sprintf(file_len, "%zuB", pvim_cur_line->v->len);
+                        sprintf(file_len, "%dB\n", len);
                         picos_str_set(pvim_status_buffer, file_len, strlen(file_len));
 
                         pvim_statusline_timeout = 60;

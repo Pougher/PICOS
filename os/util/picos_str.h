@@ -33,4 +33,7 @@ void picos_str_free(_picos_str str);
 // inserts a string at a specific index
 void picos_str_insert(_picos_str str1, char* str2, int pos);
 
+// deletes a character in a specific position
+void picos_str_delete(_picos_str str1, int index);
+
 #endif

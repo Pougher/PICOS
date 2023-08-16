@@ -54,3 +54,8 @@ void picos_str_insert(_picos_str str1, char* str2, int pos) {
     memcpy(p, str2,  l2);
     str1->str[str1->len] = 0;
 }
+
+void picos_str_delete(_picos_str str, int index) {
+    memmove(&str->str[index], &str->str[index + 1], str->len - index);
+    str->len--;
+}
