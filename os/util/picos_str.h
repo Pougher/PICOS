@@ -30,4 +30,7 @@ void picos_str_clear(_picos_str str);
 // frees the picos string
 void picos_str_free(_picos_str str);
 
+// inserts a string at a specific index
+void picos_str_insert(_picos_str str1, char* str2, int pos);
+
 #endif

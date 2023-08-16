@@ -3,15 +3,15 @@
 // probably some of the worst code I have ever written
 
 static _picos_buffer pvim_buffer;
-_picos_buffer pvim_cur_line;
-_picos_str pvim_cmd_buffer;
-_picos_str pvim_status_buffer;
-_picos_str pvim_filename;
-int pvim_mode;
-int pvim_statusline_timeout;
-int pvim_buffer_window_begin;
+static _picos_buffer pvim_cur_line;
+static _picos_str pvim_cmd_buffer;
+static _picos_str pvim_status_buffer;
+static _picos_str pvim_filename;
+static int pvim_mode;
+static int pvim_statusline_timeout;
+static int pvim_buffer_window_begin;
 
-struct { int x; int y; } pvim_cursor;
+static struct { int x; int y; } pvim_cursor;
 
 struct application* pvim_new(void) {
     struct application* pvim = malloc(sizeof(struct application));
@@ -51,28 +51,50 @@ void pvim_begin(void) {
 }
 
 void pvim_draw_cursor(void) {
-    graphics_draw_string_inv(renderer, " ", (pvim_cursor.x) * 6,
-        pvim_cursor.y * 8);
+    if (pvim_cursor.x < 20) {
+        graphics_draw_string_inv(renderer, " ", (pvim_cursor.x % 20) * 6,
+            pvim_cursor.y * 8);
+    } else {
+        if (pvim_cursor.x % 20 + 2 <= 20) {
+            graphics_draw_string_inv(renderer, " ", (pvim_cursor.x % 20 + 2) * 6,
+            pvim_cursor.y * 8);
+        }
+    }
 }
 
 void pvim_handle_arrows(int v) {
     switch(v) {
         case 181: {
-            pvim_cursor.y--;
-            pvim_cur_line = pvim_cur_line->last;
+            if (pvim_cur_line->last != NULL) {
+                if (pvim_cursor.y > 0) pvim_cursor.y--;
+                else {
+                    if (pvim_buffer_window_begin > 0)
+                        pvim_buffer_window_begin--;
+                    }
+                pvim_cur_line = pvim_cur_line->last;
+                pvim_cursor.x = pvim_cur_line->v->len;
+            }
             break;
         }
         case 182: {
-            pvim_cursor.y++;
-            pvim_cur_line = pvim_cur_line->next;
+            if (pvim_cur_line->next != NULL) {
+                if (pvim_cursor.y < 6) pvim_cursor.y++;
+                else {
+                    pvim_buffer_window_begin += 1;
+                }
+                pvim_cur_line = pvim_cur_line->next;
+                pvim_cursor.x = pvim_cur_line->v->len;
+            }
             break;
         }
         case 180: {
-            pvim_cursor.x--;
+            if (pvim_cursor.x > 0) pvim_cursor.x--;
             break;
         }
         case 183: {
-            pvim_cursor.x++;
+            if (pvim_cursor.x < (int)pvim_cur_line->v->len) {
+                pvim_cursor.x++;
+            }
             break;
         }
     }
@@ -81,8 +103,28 @@ void pvim_handle_arrows(int v) {
 void pvim_draw_buffer(void) {
     int i = pvim_buffer_window_begin;
     _picos_buffer pos = pvim_buffer;
-    while (i < pvim_buffer_window_begin + 10 && pos != NULL) {
-        graphics_draw_string(renderer, pos->v->str, 0, 8 * i);
+    for (int x = 0; x < i; x++) pos = pos->next;
+    while (i < pvim_buffer_window_begin + 7 && pos != NULL) {
+        int string_len = pos->v->len;
+        if (string_len >= 20) {
+            int lower_bound = (string_len / 20) * 20 - 1;
+            char buffer[22] = { 0 };
+
+            if (pos == pvim_cur_line) {
+                int offset = (pvim_cursor.x / 20) * 20;
+                if (offset > 0) offset -= 1;
+                strncpy(buffer, pos->v->str + offset, 20);
+            } else {
+                strncpy(buffer, pos->v->str + lower_bound,
+                    20);
+            }
+
+            graphics_draw_string(renderer, buffer, 6,
+                8 * (i - pvim_buffer_window_begin));
+            graphics_draw_string(renderer, "$", 0, 8 * (i - pvim_buffer_window_begin));
+        } else {
+            graphics_draw_string(renderer, pos->v->str, 0, 8 * (i - pvim_buffer_window_begin));
+        }
         pos = pos->next;
         i++;
     }
@@ -91,7 +133,6 @@ void pvim_draw_buffer(void) {
 void pvim_update(void) {
     pvim_draw_buffer();
     int input = keyboard_read(keyboard);
-    printf("%d\n", input);
 
     switch(pvim_mode) {
         case 0: {
@@ -104,10 +145,12 @@ void pvim_update(void) {
         }
         case 1: {
             graphics_draw_string_inv(renderer, "INSERT", 0, 56);
-            if (input == '\033') { pvim_mode = 0; }
+            if (input == '\033') { pvim_mode = 0; return; }
+            if (input == 0x08) {
+                
+            }
             else if (input == 0x0d) {
                 if (pvim_cur_line == pvim_buffer->end) {
-                    printf("Done.\n");
                     picos_buffer_newline(pvim_buffer);
                     pvim_cur_line = pvim_buffer->end;
                 } else {
@@ -116,10 +159,20 @@ void pvim_update(void) {
                     pvim_cur_line = inserted;
                 }
                 pvim_cursor.y++;
+                if (pvim_cursor.y > 6) {
+                    pvim_buffer_window_begin++;
+                    pvim_cursor.y = 6;
+                }
                 pvim_cursor.x = 0;
             }
             else if (input > 0 && input < 128) {
-                picos_str_addch(pvim_cur_line->v, input);
+                if (pvim_cursor.x == (int)pvim_cur_line->v->len) {
+                    picos_str_addch(pvim_cur_line->v, input);
+                } else {
+                    char v[2] = { input, 0 };
+                    picos_str_insert(pvim_cur_line->v, v,
+                        pvim_cursor.x);
+                }
                 pvim_cursor.x++;
             }
             pvim_draw_cursor();
@@ -130,7 +183,7 @@ void pvim_update(void) {
             graphics_draw_string_inv(renderer, "COMMAND", 0, 56);
             graphics_draw_string(renderer, ":", 44, 55);
             graphics_draw_string(renderer, pvim_cmd_buffer->str, 48, 55);
-            if (input == '\033') { pvim_mode = 0; return; }
+            if (input == '\033') { picos_str_clear(pvim_cmd_buffer); pvim_mode = 0; return; }
             if (input == 0x0d) {
                 pvim_mode = 0;
                 char* cmd = strtok(pvim_cmd_buffer->str, " ");
