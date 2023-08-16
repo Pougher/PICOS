@@ -9,12 +9,12 @@
 #include <SDL2/SDL.h>
 
 struct keyboard {
-    unsigned char* keys;
+    char last_key;
 };
 
 struct keyboard* keyboard_new(void);
 
-void poll_keyboard(struct keyboard* kb);
+int keyboard_read(struct keyboard* kb);
 void keyboard_free(struct keyboard* kb);
 
 #endif

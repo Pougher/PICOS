@@ -24,5 +24,6 @@ void menu_open_app(struct menu* menu,
                    int app_index);
 void menu_draw(struct menu* menu);
 void menu_free(struct menu* menu);
+void menu_exit_app(struct menu* menu);
 
 #endif

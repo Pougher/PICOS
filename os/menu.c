@@ -26,6 +26,10 @@ void menu_open_app(struct menu* menu,
     menu->apps[app_index]->begin();
 }
 
+void menu_exit_app(struct menu* menu) {
+    menu->loaded = 0;
+}
+
 void menu_draw(struct menu* menu) {
     (void) menu;
     // draws the menu

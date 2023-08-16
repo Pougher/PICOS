@@ -3,27 +3,27 @@
 #ifdef SOFTWARE_BUILD
 
 struct keyboard* keyboard_new(void) {
-    // allocates 128 + 8 bytes of memory to hold the keyboard struct
     struct keyboard* kb = malloc(sizeof(struct keyboard));
-    kb->keys = malloc(128);
+    kb->last_key = 0;
     return kb;
 }
 
-void poll_keyboard(struct keyboard* kb) {
+int keyboard_read(struct keyboard* kb) {
     // polls the keyboard for pressed keys
     SDL_PumpEvents();
     const unsigned char* keys = SDL_GetKeyboardState(NULL);
     for (int i = 0; i < 128; i++) {
         int keycode = SDL_GetKeyFromScancode(i);
-        if (keycode < 128) {
-            kb->keys[keycode] = keys[i];
+        if (keys[i] && kb->last_key != keycode) {
+            kb->last_key = keycode;
+            return keycode;
         }
     }
+    return 0;
 }
 
 void keyboard_free(struct keyboard* kb) {
     // frees the keyboard struct
-    free(kb->keys);
     free(kb);
 }
 

@@ -42,7 +42,6 @@ int main(void) {
                 running = 0;
             }
         }
-        poll_keyboard(keyboard);
         render_clear(renderer, 0);
 
         if (menu->loaded) {
