@@ -8,6 +8,8 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
+#LDFLAGS = -lwiringPi
+#CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -O3 -Wall -Wextra -Werror -pedantic
 LDFLAGS = -lSDL2 -L/opt/homebrew/Cellar/sdl2/2.28.1/lib
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -O3 -Wall -Wextra -Werror -pedantic -I/opt/homebrew/Cellar/sdl2/2.28.1/include
 CC = clang
