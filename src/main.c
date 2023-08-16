@@ -76,6 +76,7 @@ int main(void) {
 
     menu = menu_new();
     renderer = renderer_new();
+    keyboard = keyboard_new();
 
     menu_load_apps(menu, APP_LIST, APP_NUM);
     menu_test();
@@ -94,6 +95,7 @@ int main(void) {
 
     render_free(renderer);
     menu_free(menu);
+    keyboard_free(keyboard);
 
     return 0;
 }

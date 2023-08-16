@@ -4,6 +4,8 @@
 #include "build_type.h"
 #ifdef HARDWARE_BUILD
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <wiringPiI2C.h>
 
 struct keyboard {
@@ -14,7 +16,7 @@ struct keyboard* keyboard_new();
 
 int keyboard_read(struct keyboard* kb);
 
-void keyboard_read(struct keyboard* kb);
+void keyboard_free(struct keyboard* kb);
 
 #endif
 

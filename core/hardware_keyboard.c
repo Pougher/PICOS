@@ -11,7 +11,7 @@ int keyboard_read(struct keyboard* kb) {
     return wiringPiI2CRead(kb->device);
 }
 
-void keyboard_read(struct keyboard* kb) {
+void keyboard_free(struct keyboard* kb) {
     free(kb);
 }
 

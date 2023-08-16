@@ -5,3 +5,9 @@
 #include "software_keyboard.h"
 
 #endif
+
+#ifdef HARDWARE_BUILD
+
+#include "hardware_keyboard.h"
+
+#endif
