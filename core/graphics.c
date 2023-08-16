@@ -2,14 +2,19 @@
 
 void graphics_draw_string(struct renderer* rend, char* str, int x_, int y) {
     // draws some text at an X Y position using the default 8x6 font
+    int x_loc = 0;
+
     for (unsigned long i = 0; i < strlen(str); i++) {
         switch (str[i])  {
             case '\n': {
-                y += 12;
+                x_loc = 0;
+                y += 8;
+                continue;
                 break;
             }
             case '\t': {
                 x_ += (i * 12);
+                continue;
                 break;
             }
         }
@@ -17,26 +22,32 @@ void graphics_draw_string(struct renderer* rend, char* str, int x_, int y) {
             for (int j = 7; j >= 2; j--) {
                 render_putpixel(
                     rend,
-                    j + (i * 6) + x_ - 2,
+                    j + x_loc + x_ - 2,
                     y + x,
                     (font6x8[(int)str[i]][x] >> j) & 1
                 );
             }
         }
+        x_loc += 6;
     }
 }
 
 void graphics_draw_string_inv(struct renderer* rend, char* str, int x_, int y) {
     // draws some text at an X Y position using the default 8x6 font
     // inverts the text
+    int x_loc = 0;
+
     for (unsigned long i = 0; i < strlen(str); i++) {
         switch (str[i])  {
             case '\n': {
-                y += 12;
+                y += 8;
+                x_loc = 0;
+                continue;
                 break;
             }
             case '\t': {
                 x_ += (i * 12);
+                continue;
                 break;
             }
         }
@@ -44,12 +55,13 @@ void graphics_draw_string_inv(struct renderer* rend, char* str, int x_, int y) {
             for (int j = 7; j >= 2; j--) {
                 render_putpixel(
                     rend,
-                    j + (i * 6) + x_ - 2,
+                    j + x_loc + x_ - 2,
                     y + x,
                     (~(font6x8[(int)str[i]][x] >> j)) & 1
                 );
             }
         }
+        x_loc += 6;
     }
 }
 
