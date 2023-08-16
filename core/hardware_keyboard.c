@@ -5,6 +5,7 @@
 struct keyboard* keyboard_new() {
     struct keyboard* nkb = malloc(sizeof(struct keyboard));
     nkb->device = wiringPiI2CSetup(KEYBOARD_I2C_ADDR);
+    return nkb;
 }
 
 int keyboard_read(struct keyboard* kb) {

@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <wiringPiI2C.h>
 
+#define KEYBOARD_I2C_ADDR 0x5f
+
 struct keyboard {
     int device;
 };
