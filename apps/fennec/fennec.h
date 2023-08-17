@@ -12,14 +12,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct application* pvim_new(void);
+struct application* fennec_new(void);
 
-void pvim_begin(void);
-void pvim_update(void);
+void fennec_begin(void);
+void fennec_update(void);
 
 // -- private functions --
-void pvim_draw_cursor(void);
-void pvim_handle_arrows(int v);
-void pvim_draw_buffer(void);
+void fennec_draw_cursor(void);
+void fennec_handle_arrows(int v);
+void fennec_draw_buffer(void);
 
 #endif

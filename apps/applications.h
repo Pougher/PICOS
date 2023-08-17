@@ -1,6 +1,6 @@
 #ifndef APPLICATIONS_H
 #define APPLICATIONS_H
 
-#include "pvim/pvim.h"
+#include "fennec/fennec.h"
 
 #endif
