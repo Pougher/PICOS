@@ -265,7 +265,7 @@ void pvim_update(void) {
                         while ((read = getline(&line, &len, fp)) != -1) {
                             line[read - 1] = '\0';
                             picos_str_set(pvim_buffer->end->v,
-                                line, read - 1);
+                                line, read);
                             picos_buffer_newline(pvim_buffer);
                         }
 
@@ -317,7 +317,13 @@ void pvim_update(void) {
         }
     }
     if (pvim_mode != 2 && pvim_statusline_timeout == 0) {
-        picos_input_render(pvim_filename, renderer, 50, 56, 12);
+        if (pvim_filename->text->len > 12) {
+            graphics_draw_string(renderer,
+                pvim_filename->text->str + (pvim_filename->text->len - 12),
+                50, 56);
+        } else {
+            picos_input_render(pvim_filename, renderer, 50, 56, 12);
+        }
     } else if (pvim_statusline_timeout) {
         graphics_draw_string(renderer, pvim_status_buffer->str, 50, 56);
     }
