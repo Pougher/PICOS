@@ -80,7 +80,7 @@ void pvim_handle_arrows(int v) {
             }
             break;
         }
-        case 182: {
+        case ']': {
             if (pvim_cur_line->next != NULL) {
                 if (pvim_cursor.y < 6) pvim_cursor.y++;
                 else {
@@ -271,6 +271,7 @@ void pvim_update(void) {
 
                         fclose(fp);
                         picos_str_set(pvim_filename->text, cmd, strlen(cmd));
+                        return;
                     }
                 } else if (strcmp(cmd, "w") == 0) {
                     if (strcmp(pvim_filename->text->str, "[NO NAME]") == 0) {
