@@ -13,6 +13,7 @@ struct menu {
 
     int loaded;
     int loaded_index;
+    int cursor_index;
 };
 
 struct menu* menu_new(void);
@@ -23,6 +24,7 @@ void menu_load_apps(struct menu* menu,
 void menu_open_app(struct menu* menu,
                    int app_index);
 void menu_draw(struct menu* menu);
+void menu_update(struct menu* menu);
 void menu_free(struct menu* menu);
 void menu_exit_app(struct menu* menu);
 

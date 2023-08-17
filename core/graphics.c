@@ -94,6 +94,40 @@ void graphics_draw_bitmap(struct renderer* rend,
     }
 }
 
+void graphics_draw_bytemap(struct renderer* rend,
+                           char** bitmap,
+                           int cols,
+                           int rows,
+                           int x,
+                           int y) {
+    for (int i = 0; i < rows; i++) {
+        for (int byte = 0; byte < cols; byte++) {
+            // iterate over the bits in the byte
+            for (int bit = 0; bit < 8; bit++) {
+                int val = bitmap[i][byte] & (0x80 >> bit);
+                render_putpixel(rend, byte*8 + bit + x, i + y, val);
+            }
+        }
+    }
+}
+
+void graphics_draw_bytemap_inv(struct renderer* rend,
+                               char** bitmap,
+                               int cols,
+                               int rows,
+                               int x,
+                               int y) {
+    for (int i = 0; i < rows; i++) {
+        for (int byte = 0; byte < cols; byte++) {
+            // iterate over the bits in the byte
+            for (int bit = 0; bit < 8; bit++) {
+                int val = (bitmap[i][byte] & (0x80 >> bit));
+                render_putpixel(rend, byte*8 + bit + x, i + y, (~val) & 0x80 >> bit);
+            }
+        }
+    }
+}
+
 void graphics_draw_line(struct renderer* rend, int x1, int y1, int x2, int y2) {
     // draws a line from (x1, y1) to (x2, y2)
     int dx = x2 - x1;

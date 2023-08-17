@@ -23,7 +23,7 @@ int main(void) {
     keyboard = keyboard_new();
 
     menu_load_apps(menu, APP_LIST, APP_NUM);
-    menu_test();
+    //menu_test();
 
 
     SDL_ShowWindow(win->window);
@@ -46,6 +46,9 @@ int main(void) {
 
         if (menu->loaded) {
             menu->apps[menu->loaded_index]->update();
+        } else {
+            menu_draw(menu);
+            menu_update(menu);
         }
 
         render_swap(renderer);
@@ -79,13 +82,16 @@ int main(void) {
     keyboard = keyboard_new();
 
     menu_load_apps(menu, APP_LIST, APP_NUM);
-    menu_test();
+    //menu_test();
 
     while (1) {
         render_clear(renderer, 0);
 
         if (menu->loaded) {
             menu->apps[menu->loaded_index]->update();
+        } else {
+            menu_draw(menu);
+            menu_update(menu);
         }
 
         render_swap(renderer);

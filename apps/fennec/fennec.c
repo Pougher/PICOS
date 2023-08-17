@@ -11,11 +11,34 @@ static int fennec_mode;
 static int fennec_statusline_timeout;
 static int fennec_buffer_window_begin;
 
+static char* fennec_version = "FENNEC v0.2";
 static char* fennec_boot_screen = " FENNEC EDITOR\n"
                                 "by Jobe Pougher\n\n";
 static char* fennec_boot_help = ":q to exit\n"
                               ":o to open files";
-static int fennec_render_boot = 1;
+static int fennec_render_boot;
+
+static char fennec_icon_data[APP_ICON_HEIGHT][APP_ICON_WIDTH] = {
+    { 0xff, 0xff, 0xff, 0xff },
+    { 0x80, 0x00, 0x00, 0x01 },
+    { 0xbb, 0xb3, 0x3b, 0x81 },
+    { 0xb3, 0x2a, 0xb2, 0x01 },
+    { 0xa3, 0xaa, 0xbb, 0x81 },
+    { 0x80, 0x00, 0x00, 0x01 },
+    { 0x98, 0x00, 0x7f, 0xc1 },
+    { 0x8c, 0x01, 0x80, 0x31 },
+    { 0x80, 0x16, 0x40, 0x09 },
+    { 0x80, 0x28, 0xa0, 0x25 },
+    { 0x80, 0x27, 0x20, 0x25 },
+    { 0x83, 0x20, 0x27, 0xc5 },
+    { 0x81, 0xad, 0x98, 0x85 },
+    { 0x80, 0x20, 0x20, 0x49 },
+    { 0x80, 0x52, 0x78, 0x71 },
+    { 0x80, 0x4f, 0x97, 0x81 },
+    { 0x80, 0x30, 0xe0, 0x01 },
+    { 0x80, 0x00, 0x00, 0x01 },
+    { 0xff, 0xff, 0xff, 0xff },
+};
 
 static struct { int x; int y; int true_y; } fennec_cursor;
 
@@ -28,6 +51,19 @@ struct application* fennec_new(void) {
     fennec->begin = fennec_begin;
     fennec->update = fennec_update;
 
+    fennec->icon = malloc(sizeof(char*) * APP_ICON_HEIGHT);
+    for (int i = 0; i < APP_ICON_HEIGHT; i++) {
+        fennec->icon[i] = malloc(sizeof(char) * APP_ICON_WIDTH);
+        if (fennec->icon[i] == NULL) {
+            fprintf(stderr, "Failed to allocate memory");
+            exit(-1);
+        }
+    }
+    for (int i = 0; i < APP_ICON_HEIGHT; i++) {
+        for (int j = 0; j < APP_ICON_WIDTH; j++) {
+            fennec->icon[i][j] = fennec_icon_data[i][j];
+        }
+    }
 
     return fennec;
 }
@@ -56,6 +92,7 @@ void fennec_begin(void) {
     fennec_buffer_window_begin = 0;
 
     fennec_filename->draw_cursor = 0;
+    fennec_render_boot = 1;
 }
 
 void fennec_draw_cursor(void) {
@@ -155,7 +192,7 @@ void fennec_update(void) {
         case 0: {
             graphics_draw_string_inv(renderer, "NORMAL", 0, 56);
             if (input == 'i') fennec_mode = 1;
-            if (input == ';') fennec_mode = 2;
+            if (input == ':') fennec_mode = 2;
             fennec_draw_cursor();
             fennec_handle_arrows(input);
             break;
@@ -239,7 +276,12 @@ void fennec_update(void) {
 
                     menu_exit_app(menu);
                     return;
-                } else if (strcmp(cmd, "e") == 0) {
+                } else if (strcmp(cmd, "v") == 0) {
+                    picos_str_set(fennec_status_buffer, fennec_version, strlen(fennec_version));
+                    fennec_statusline_timeout = 60;
+                    return;
+                }
+                else if (strcmp(cmd, "e") == 0) {
                     cmd = strtok(NULL, " ");
                     if (cmd == NULL) {
                         picos_str_set(fennec_status_buffer, "E <FILE>", 8);

@@ -7,10 +7,13 @@
 // every application has a name, a description
 // and an icon that is a bitmap with a resolution of 32x19 pixels.
 
+#define APP_ICON_WIDTH 4 // 4 bytes
+#define APP_ICON_HEIGHT 19
+
 struct application {
     char name[12];
     char description[40];
-    char icon[32][19];
+    char** icon;
     void (*begin)(void);
     void (*update)(void);
 };
