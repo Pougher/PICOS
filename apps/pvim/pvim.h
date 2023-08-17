@@ -6,6 +6,7 @@
 
 #include "../os/util/picos_str.h"
 #include "../os/util/picos_buffer.h"
+#include "../os/util/picos_input.h"
 
 #include <stdio.h>
 #include <stdlib.h>

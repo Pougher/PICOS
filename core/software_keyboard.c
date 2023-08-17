@@ -12,13 +12,18 @@ int keyboard_read(struct keyboard* kb) {
     // polls the keyboard for pressed keys
     SDL_PumpEvents();
     const unsigned char* keys = SDL_GetKeyboardState(NULL);
+    int found_key = 0;
     for (int i = 0; i < 128; i++) {
         int keycode = SDL_GetKeyFromScancode(i);
-        if (keys[i] && kb->last_key != keycode) {
-            kb->last_key = keycode;
-            return keycode;
+        if (keys[i]) {
+            found_key = 1;
+            if (keycode != kb->last_key) {
+                kb->last_key = keycode;
+                return keycode;
+            }
         }
     }
+    if (!found_key) kb->last_key = 0;
     return 0;
 }
 
