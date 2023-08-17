@@ -105,7 +105,8 @@ void graphics_draw_bytemap(struct renderer* rend,
             // iterate over the bits in the byte
             for (int bit = 0; bit < 8; bit++) {
                 int val = bitmap[i][byte] & (0x80 >> bit);
-                render_putpixel(rend, byte*8 + bit + x, i + y, val);
+                volatile int r = !!val;
+                render_putpixel(rend, byte*8 + bit + x, i + y, r);
             }
         }
     }
@@ -122,7 +123,8 @@ void graphics_draw_bytemap_inv(struct renderer* rend,
             // iterate over the bits in the byte
             for (int bit = 0; bit < 8; bit++) {
                 int val = (bitmap[i][byte] & (0x80 >> bit));
-                render_putpixel(rend, byte*8 + bit + x, i + y, (~val) & 0x80 >> bit);
+                volatile int r = !val;
+                render_putpixel(rend, byte*8 + bit + x, i + y, r);
             }
         }
     }
