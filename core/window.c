@@ -29,16 +29,16 @@ void window_send_buffer_emu(struct window* win, struct renderer* renderer) {
             r.w = 10;
             r.h = 10;
             if (renderer->frontbuffer[i + j * SCREEN_WIDTH]) {
-                SDL_SetRenderDrawColor(win->renderer, 45, 64, 2, 0);
+                SDL_SetRenderDrawColor(win->renderer, 191, 108, 0, 0);
             } else {
-                SDL_SetRenderDrawColor(win->renderer, 174, 174, 0, 255);
+                SDL_SetRenderDrawColor(win->renderer, 46, 14, 0, 255);
             }
             SDL_RenderFillRect(win->renderer, &r);
         }
     }
 
     // draw the grid overlay
-    SDL_SetRenderDrawColor(win->renderer, 174, 174, 0, 255);
+    SDL_SetRenderDrawColor(win->renderer, 28, 9, 0, 255);
     for (int i = 0; i < win->height / 10; i++) {
         SDL_RenderDrawLine(win->renderer, 0, i * 10, win->width, i * 10);
     }

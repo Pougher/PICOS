@@ -17,6 +17,10 @@ int keyboard_read(struct keyboard* kb) {
         int keycode = SDL_GetKeyFromScancode(i);
         if (keys[i]) {
             found_key = 1;
+            if (keycode == 1073741906) keycode = 181;
+            else if (keycode == 1073741905) keycode = 182;
+            else if (keycode == 1073741904) keycode = 180;
+            else if (keycode == 1073741903) keycode = 183;
             if (keycode != kb->last_key) {
                 kb->last_key = keycode;
                 return keycode;

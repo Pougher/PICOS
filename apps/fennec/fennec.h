@@ -1,5 +1,5 @@
-#ifndef PVIM_H
-#define PVIM_H
+#ifndef FENNEC_H
+#define FENNEC_H
 
 #include "../core/application.h"
 #include "../core/picos.h"

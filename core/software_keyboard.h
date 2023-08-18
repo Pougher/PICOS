@@ -9,7 +9,7 @@
 #include <SDL2/SDL.h>
 
 struct keyboard {
-    char last_key;
+    unsigned char last_key;
 };
 
 struct keyboard* keyboard_new(void);

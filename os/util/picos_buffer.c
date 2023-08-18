@@ -5,6 +5,7 @@ _picos_buffer picos_buffer_new(void) {
     new_buffer->next = NULL;
     new_buffer->last = NULL;
     new_buffer->end = new_buffer;
+    new_buffer->length = 0;
 
     new_buffer->v = picos_str_new();
     picos_str_set(new_buffer->v, "", 0);
@@ -13,6 +14,7 @@ _picos_buffer picos_buffer_new(void) {
 }
 
 void picos_buffer_newline(_picos_buffer buff) {
+    buff->length++;
     _picos_buffer new_buffer = picos_buffer_new();
     buff->end->next = new_buffer;
     new_buffer->last = buff->end;
@@ -29,6 +31,7 @@ _picos_buffer picos_buffer_insert(_picos_buffer buff, int index) {
     buff->next = new_buffer;
     new_buffer->last = buff;
     new_buffer->next->last = new_buffer;
+    buff->length++;
 
     return new_buffer;
 }

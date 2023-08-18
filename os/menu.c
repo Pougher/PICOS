@@ -33,12 +33,22 @@ void menu_exit_app(struct menu* menu) {
 }
 
 void menu_draw(struct menu* menu) {
+    (void) menu;
     // draws the menu
+    graphics_draw_string_inv(renderer, " /// PICOS V0.12 /// ", 1, 0);
+    for (int j = 0; j < 7; j++) {
+        render_putpixel(renderer, 0, j, 1);
+        render_putpixel(renderer, 127, j, 1);
+    }
     for (int i = 0; i < menu->num_apps; i++) {
         if (i == menu->cursor_index) {
-            graphics_draw_bytemap_inv(renderer, menu->apps[i]->icon, 4, 19, 0, 0);
+            graphics_draw_bytemap_inv(renderer,
+                menu->apps[i]->icon,
+                4, 19, 32 * (i % 4), 7 + (i / 4) * 19);
         } else {
-            graphics_draw_bytemap(renderer, menu->apps[i]->icon, 4, 19, 0, 0);
+            graphics_draw_bytemap(renderer,
+                menu->apps[i]->icon,
+                4, 19, 32 * (i % 4), 7 + (i / 4) * 19);
         }
     }
 }
@@ -46,6 +56,12 @@ void menu_draw(struct menu* menu) {
 void menu_update(struct menu* menu) {
     int input = keyboard_read(keyboard);
     if (input == 0x0d) menu_open_app(menu, menu->cursor_index);
+    if (input == 183) {
+        if (menu->cursor_index < menu->num_apps - 1) menu->cursor_index++;
+    }
+    if (input == 180) {
+        if (menu->cursor_index > 0) menu->cursor_index--;
+    }
 }
 
 void menu_free(struct menu* menu) {

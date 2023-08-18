@@ -5,10 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void menu_test(void) {
-    menu_open_app(menu, 0);
-}
-
 #ifdef SOFTWARE_BUILD
 
 #include <SDL2/SDL.h>
@@ -32,12 +28,6 @@ int main(void) {
 
     while (running) {
         while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT: {
-                    running = 0;
-                    break;
-                }
-            }
             if (event.type == SDL_QUIT) {
                 running = 0;
             }

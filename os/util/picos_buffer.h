@@ -8,6 +8,7 @@ typedef struct picos_buffernode_t {
     struct picos_buffernode_t* next;
     struct picos_buffernode_t* last;
     struct picos_buffernode_t* end;
+    int length;
 } picos_buffer_t;
 
 #define _picos_buffer picos_buffer_t*
